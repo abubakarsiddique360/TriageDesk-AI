@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "fallback_category": "general",
+  "categories": {
+    "outage": {
+      "queue": "sre",
+      "base_priority": "P1",
+      "keywords": {
+        "outage": 5,
+        "down": 3,
+        "unavailable": 4,
+        "timing out": 3,
+        "not responding": 3,
+        "500 error": 4,
+        "all requests failing": 5
+      },
+      "patterns": ["service (is )?unavailable", "5[0-9][0-9] (error|response)", "every request fails"]
+    },
+    "security": {
+      "queue": "security",
+      "base_priority": "P1",
+      "keywords": {
+        "breach": 5,
+        "compromised": 5,
+        "leaked": 4,
+        "unauthorized": 4,
+        "suspicious login": 4,
+        "phishing": 3,
+        "vulnerability": 3,
+        "api key exposed": 5
+      },
+      "patterns": ["account (was )?compromised", "data (was )?exposed"]
+    },
+    "bug": {
+      "queue": "engineering",
+      "base_priority": "P2",
+      "keywords": {
+        "crash": 3,
+        "regression": 3,
+        "exception": 2,
+        "stack trace": 3,
+        "broken": 2,
+        "reproducible": 2,
+        "bug": 2
+      },
+      "patterns": ["since the (last )?release", "worked yesterday"]
+    },
+    "billing": {
+      "queue": "billing",
+      "base_priority": "P3",
+      "keywords": {
+        "invoice": 3,
+        "billing": 3,
+        "refund": 3,
+        "double charged": 4,
+        "payment failed": 3,
+        "subscription": 2,
+        "tax": 1
+      },
+      "patterns": ["charged twice", "invoice (is )?wrong"]
+    },
+    "account": {
+      "queue": "support",
+      "base_priority": "P3",
+      "keywords": {
+        "locked out": 4,
+        "cannot sign in": 4,
+        "password reset": 3,
+        "two factor": 2,
+        "2fa": 2,
+        "sso": 3,
+        "seat": 1
+      },
+      "patterns": ["cannot (log|sign) in"]
+    },
+    "how_to": {
+      "queue": "support",
+      "base_priority": "P4",
+      "keywords": {
+        "how do i": 3,
+        "how to": 2,
+        "documentation": 2,
+        "docs": 1,
+        "guide": 1,
+        "best practice": 2,
+        "configure": 1
+      },
+      "patterns": ["where can i find"]
+    },
+    "feature_request": {
+      "queue": "product",
+      "base_priority": "P4",
+      "keywords": {
+        "feature request": 4,
+        "would be nice": 2,
+        "support for": 2,
+        "roadmap": 2,
+        "would love": 2,
+        "add an option": 2
+      },
+      "patterns": ["please add", "any plans to"]
+    },
+    "general": {
+      "queue": "support",
+      "base_priority": "P3",
+      "keywords": {"question": 1, "help": 1, "issue": 1},
+      "patterns": []
+    }
+  },
+  "escalators": [
+    {"pattern": "data loss|lost (all|my) data|deleted (all|my) data", "to": "P1", "reason": "possible data loss"},
+    {"pattern": "all (users|customers|teams)|company[- ]wide|everyone is", "to": "P1", "reason": "widespread impact"},
+    {"pattern": "production|prod environment|live environment", "to": "P2", "reason": "production impact"},
+    {"pattern": "urgent|asap|immediately|right now", "to": "P2", "reason": "customer marked it urgent"}
+  ],
+  "tier_shift": {"enterprise": -1, "business": 0, "standard": 0},
+  "sla_minutes": {
+    "P1": [15, 240],
+    "P2": [60, 480],
+    "P3": [480, 1440],
+    "P4": [1440, 4320]
+  }
+}
